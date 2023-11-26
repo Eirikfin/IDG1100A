@@ -13,6 +13,7 @@ UTIL_DIR="${SCRIPT_DIR}/utilities"
 # importing our utilities
 source "${UTIL_DIR}/get.page.sh"
 source "${UTIL_DIR}/extract.elements.sh"
+source "${UTIL_DIR}/math.sh"
 
 # extracting places and URLs to per-place Wiki pages -- as <a> elements
 # # cat "${TMP_DIR}/1.html"|\
@@ -35,14 +36,17 @@ source "${UTIL_DIR}/extract.elements.sh"
 # echo "Extracted places as data"
 
 # getting place coordinates per place
+truncate -s 0 "$TMP_DIR/places.with.coords.txt"
 while read -r url place; do
     page=$(get_page "$url")
     lat=$(extract_elements 'span' 'class="latitude"' <<< "$page" |\
         head -n 1 |\
-        get_inner_html)
+        get_inner_html |\
+        deg2dec)
     lon=$(extract_elements 'span' 'class="longitude"' <<< "$page" |\
         head -n 1 |\
-        get_inner_html)
+        get_inner_html |\
+        deg2dec)
 	printf "%s\t%s\t%s\t%s\n" $url $place $lat $lon >> "$TMP_DIR/places.with.coords.txt"
 done < "$TMP_DIR/places.as.data.txt"
 
