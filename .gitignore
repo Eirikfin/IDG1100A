@@ -1,5 +1,2 @@
 **.DS_store
-tmp/*
 .shellcheckrc
-logs/*
-data/*
