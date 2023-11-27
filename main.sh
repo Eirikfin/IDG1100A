@@ -3,7 +3,7 @@
 # defining constants
 WIKI_URL_LIST='https://en.wikipedia.org/wiki/List_of_municipalities_of_Norway'
 # SCRIPT_DIR="$( pwd )"
-SCRIPT_DIR="$( dirname "$0" )"
+# SCRIPT_DIR="$( dirname "$0" )"
 TMP_DIR="${SCRIPT_DIR}/tmp"
 UTIL_DIR="${SCRIPT_DIR}/utilities"
 LOGS_DIR="${SCRIPT_DIR}/logs"
@@ -61,13 +61,9 @@ if [[ ! -f  "${DATA_DIR}/places.txt" ]]; then
     ' "$TMP_DIR/places.with.coords.txt" > "$DATA_DIR/places.txt"
 fi
 
-# TODO: query API after expiration; keep 'last updated' to show
-
 # awk -F '\t' '
 #     {
 #         printf("%s\t\t\t\t\t\n", $0);
 #         if(NR < FNR) printf("\n");
 #     }
 # ' "$TMP_DIR/places.with.coords.txt" | tail -n 4 > "$DATA_DIR/places.txt"
-
-# sed -E 's/.*<table class="sortable wikitable">(.*)<\/table>.*/\1/g' wiki.list.no.newlines.html | sed 's/<\/table>/\n/g' | sed -n '1p' | grep -o '<tbody[ >].*<\/tbody>' | sed -E 's/<tbody[^>]*>(.*)<\/tbody>/\1/g' | sed -E 's/<tr[^>]*>//g' | sed 's/<\/tr>/\n/g' | sed -E 's/<td[^>]*>//g' | sed 's/<\/td>/\t/g' | sed '1d' > table.txt

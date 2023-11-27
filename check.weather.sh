@@ -2,11 +2,12 @@
 
 WEATHER_API_URL='https://api.met.no/weatherapi/locationforecast/2.0/classic?altitude=90'
 # SCRIPT_DIR="$( pwd )"
-SCRIPT_DIR="$( dirname "$0" )"
+# SCRIPT_DIR="$( dirname "$0" )"
 TMP_DIR="${SCRIPT_DIR}/tmp"
 UTIL_DIR="${SCRIPT_DIR}/utilities"
 LOGS_DIR="${SCRIPT_DIR}/logs"
 DATA_DIR="${SCRIPT_DIR}/data"
+
 
 # loading our utilities
 source "${UTIL_DIR}/api.sh"
