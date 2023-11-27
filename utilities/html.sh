@@ -46,7 +46,6 @@ function extract_elements(){
     echo "$html_single_line" | \
         sed -E "s|(${closing_tag})|\1\n|g" |\
         grep -o "${opening_tag}.*${closing_tag}"
-    echo "Extracted element: ${tag}" >&2
 }
 
 function extract_selfclosing_elements(){
@@ -66,8 +65,6 @@ function extract_selfclosing_elements(){
             sed -E 's|(<)|\n\1|g' )
     sed '/^$/d' <<< "$html_multi_line" |\
         grep -E -o "${search_element}"
-
-    # echo "Extracted element: ${tag}" >&2
 }
 
 # takes an html element (or many elements) as a string (stdin) and extracts its contents (stdout)
@@ -102,5 +99,5 @@ function tags2columns(){
             sed -E "s|^\t||"
     done
 
-    echo "Split in columns on: ${split_on_tag}" >&2
+    # echo "Split in columns on: ${split_on_tag}" >&2
 }

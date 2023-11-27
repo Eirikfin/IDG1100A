@@ -5,15 +5,9 @@ page_template="%page_template%"
 this_dir="$( dirname "$0" )"
 log_file="$this_dir/logs.txt"
 
-echo "[INFO] All env vars:\n $(env)" >> "$log_file"
-
 query_string="$(printf '%b' ${QUERY_STRING//%/\\x})"
 
-echo "[INFO] query_string: ${query_string}" >> "$log_file"
-
 place=$(sed -E 's|place=([^&?]*)|\1|' <<< "$query_string")
-
-echo "[INFO] place: ${place}" >> "$log_file"
 
 # searching for the place in our data
 body=$(
