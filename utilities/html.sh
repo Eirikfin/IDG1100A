@@ -1,6 +1,25 @@
 #!/bin/bash
 
-set -e
+# requests a page, follwing redirects, and preps it for sed processing
+function get_page(){
+    local url fname html one_line_html
+    url=$1
+    fname=$2
+
+    html="$(curl -s -L "$url")"
+
+    # removing all newline and tab characters - so we can process the entire page as a single string -- because sed, awk, cut, and grep work line by line
+    one_line_html="$( echo "$html" | tr -d '\n\t' )" 
+
+    if [ -z "$fname" ]; then
+        # returning the result as standard output
+        echo "$one_line_html"
+    else
+        # a filename was supplied - saving the output in a file
+        printf "%s" "$one_line_html" > "$fname"
+    fi
+    echo "We've received the page: ${url}" >&2
+}
 
 # extracts an html element from a string
 # takes an html string as standard input
@@ -27,8 +46,28 @@ function extract_elements(){
     echo "$html_single_line" | \
         sed -E "s|(${closing_tag})|\1\n|g" |\
         grep -o "${opening_tag}.*${closing_tag}"
-
     echo "Extracted element: ${tag}" >&2
+}
+
+function extract_selfclosing_elements(){
+    local tag template html_single_line
+    tag="$1"
+    template="$2"
+
+    while read -r line; do
+        html_single_line+=$line
+    done
+
+    search_element="<${tag} ?${template} ?/?>"
+    # ensuring each element occupies one line; then searching for the needed like (aka, element)
+    html_multi_line=$(
+        echo "$html_single_line" |\
+            sed -E "s|(>)|\1\n|g" |\
+            sed -E 's|(<)|\n\1|g' )
+    sed '/^$/d' <<< "$html_multi_line" |\
+        grep -E -o "${search_element}"
+
+    # echo "Extracted element: ${tag}" >&2
 }
 
 # takes an html element (or many elements) as a string (stdin) and extracts its contents (stdout)
